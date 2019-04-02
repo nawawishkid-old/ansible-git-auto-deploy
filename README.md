@@ -5,6 +5,10 @@
 - รายชื่อ hosts หรือ IP address ทั้งหมดที่ระบุใน `hosts` file หรือ `-i` flag ของ `ansible-playbook` command จะถูกใช้ เนื่องจาก set ค่า `hosts` ไว้เป็น `all` ครับ
 - หลังจาก set up remote host(s) เสร็จแล้ว playbook นี้จะเพิ่ม remote repository ไปยัง local repository (`git remote add ...`) **ก็ต่อเมื่อ**ได้รับ arguments `local_work_tree` **และ** กรณีที่ run on multiple hosts **ต้องไม่** ใส่ argument `remote_name` ถ้าจะใส่ `remote_name` ต้องมี remote host เดียวเท่านั้นครับ
 
+## Todos
+
+- [ ] support multiple remotes with same name using `git remote set-url --add --push <name> <url>`. See: [https://stackoverflow.com/questions/14290113/git-pushing-code-to-two-remotes](https://stackoverflow.com/questions/14290113/git-pushing-code-to-two-remotes)
+
 ---
 
 ## ก่อนใช้ควรจะ...
