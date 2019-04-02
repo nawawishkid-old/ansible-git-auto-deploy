@@ -1,16 +1,8 @@
 - name: Git auto deploy
-  hosts: staging
-  remote_user: root
+  hosts: all
+  remote_user: "{{ u }}"
   gather_facts: no
-  vars:
-    working_tree_hub: $HOME/.agad-working-tree
-    bare_git_hub: $HOME/.agad-bare-git
   pre_tasks:
-    - fail:
-        msg: "'repo_name' variable is required"
-      when: repo_name is not defined
-      tags:
-        - always
     - name: Unlimit SSH port 22 using ufw command
       ufw:
         rule: allow
@@ -28,44 +20,11 @@
       tags:
         - always
   tasks:
-    - name: Setup remote git auto deploy
-      block:
-        - name: Ensure existence of bare git repo directory
-          file:
-            path: "{{ bare_git_hub }}"
-            state: directory
-        - set_fact:
-            working_target: "{{ working_tree_hub }}/{{ repo_name }}"
-            repo_target: "{{ bare_git_hub }}/{{ repo_name }}.git"
-            branch: "{{ branch|default('master') }}"
-            hook: "{{ hook|default('') }}"
+    - block:
+        - import_role:
+            name: set-remote
           tags:
-            - set-fact
-        - set_fact:
-            post_receive_hook_file: "{{ repo_target }}/hooks/post-receive"
-          tags:
-            - set-fact
-        - name: Create bare git repo
-          shell: git init --bare {{ repo_target }}
-        - name: Create working directory
-          file:
-            path: "{{ working_target }}"
-            state: directory
-        - name: Add default post-receive hook file
-          template:
-            src: ./post-receive.j2
-            dest: "{{ post_receive_hook_file }}"
-            mode: 0754
-          when: hook == ''
-          tags:
-            - default_hook
-        - name: Add post-receive hook file
-          copy:
-            src: "{{ hook }}"
-            dest: "{{ post_receive_hook_file }}"
-          when: hook != ''
-          tags:
-            - custom_hook
+            - set-remote
       always:
         - name: Limit SSH port 22 using ufw command
           ufw:
@@ -73,3 +32,5 @@
             port: ssh
           tags:
             - always
+
+  

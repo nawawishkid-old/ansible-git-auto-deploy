@@ -1,0 +1,60 @@
+---
+# tasks file for roles/agad
+- name: Ensure existence of bare git repo directory
+  file:
+    path: "{{ _git_dirs }}"
+    state: directory
+
+- set_fact:
+    work_tree_dir: "{{ _work_tree_dirs }}/{{ _repo_name }}"
+    git_dir: "{{ _git_dirs }}/{{ _repo_name }}.git"
+  tags:
+    - set-remote_set-fact
+    - always
+
+- set_fact:
+    post_receive_hook_file: "{{ git_dir }}/hooks/post-receive"
+  tags:
+    - set-remote_set-fact
+
+- name: Create bare git repository
+  command: git init --bare {{ git_dir }}
+
+- name: Create work tree directory
+  file:
+    path: "{{ work_tree_dir }}"
+    state: directory
+
+- name: Add post-receive hook file
+  template:
+    src: post-receive.j2
+    dest: "{{ post_receive_hook_file }}"
+    mode: 0754
+  tags:
+    - set-remote_hook
+
+- debug:
+    msg: Will disable setting local remote repository since setting remote_name on multiple hosts is not supported
+  when: local_work_tree is defined and remote_name is defined and groups['all']|length > 1
+  tags:
+    - set-remote_add-origin
+
+- name: Add origin to local repository
+  block:
+    - set_fact:
+        _remote_name: "{{ remote_name|default(inventory_hostname) }}"
+        remote_git: "{{ u }}@{{ inventory_hostname }}:{{ git_dir }}" # user@hostname:path/to/repo.git
+
+    - name: Get all existing remote
+      local_action: command git -C {{ local_work_tree }} remote
+      register: output
+
+    - name: Remove remote repo if it already exists
+      local_action: command git -C {{ local_work_tree }} remote remove {{ _remote_name }}
+      when: _remote_name in output.stdout_lines
+
+    - name: Add origin to local repository
+      local_action: command git -C {{ local_work_tree }} remote add {{ _remote_name }} {{ remote_git }}
+  when: local_work_tree is defined and (remote_name is not defined or groups['all']|length == 0)
+  tags:
+    - set-remote_add-origin
