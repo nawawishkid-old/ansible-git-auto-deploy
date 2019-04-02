@@ -5,12 +5,16 @@
 - รายชื่อ hosts หรือ IP address ทั้งหมดที่ระบุใน `hosts` file หรือ `-i` flag ของ `ansible-playbook` command จะถูกใช้ เนื่องจาก set ค่า `hosts` ไว้เป็น `all` ครับ
 - หลังจาก set up remote host(s) เสร็จแล้ว playbook นี้จะเพิ่ม remote repository ไปยัง local repository (`git remote add ...`) **ก็ต่อเมื่อ**ได้รับ arguments `local_work_tree` **และ** กรณีที่ run on multiple hosts **ต้องไม่** ใส่ argument `remote_name` ถ้าจะใส่ `remote_name` ต้องมี remote host เดียวเท่านั้นครับ
 
+---
+
 ## ก่อนใช้ควรจะ...
 
 - ใช้ Git เป็นไม่มากก็น้อยครับ
 - อ่านบทความนี้ก่อนครับ: [Simple automated GIT Deployment using GIT Hooks](https://gist.github.com/noelboss/3fe13927025b89757f8fb12e9066f2fa)
 - ใช้งาน [Ansible](https://docs.ansible.com/ansible/latest/index.html) เป็น
 - มี `git` และ `ansible-playbook` command ให้ใช้ในเครื่อง host ครับ
+
+---
 
 ## วิธีใช้
 
@@ -51,6 +55,8 @@ ansible-playbook -i '<remote-host>,' playbook.yml \
 ```shell
 git remote add <remote-name> <username>@<remote-host>:.agad-git/<repo_name>.git
 ```
+
+---
 
 ## Arguments
 
