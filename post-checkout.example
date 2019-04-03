@@ -1,0 +1,13 @@
+# This file will be append to `post-receive` hook file on remote repository
+# if you run playbook with `-e post_checkout=./post-checkout.example`
+
+echo '(Re)building an image'
+docker build -t nawawishkid/gatsby-blog $TARGET
+
+if [ `docker ps -aqf name=blog` ]; then
+	echo 'Removing existing container...'
+	docker rm -f blog
+fi
+
+echo 'Running container...'
+docker run --name blog -d -p 80:80 nawawishkid/gatsby-blog
