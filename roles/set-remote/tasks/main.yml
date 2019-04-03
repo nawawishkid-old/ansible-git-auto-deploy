@@ -33,6 +33,27 @@
   tags:
     - set-remote_hook
 
+- name: Add post-checkout (inside of post-receive) hook file to remote host
+  block:
+    - set_fact:
+        post_checkout_tmp: "{{ ansible_user_dir }}/.post-checkout.tmp"
+
+    - name: Copy post-checkout (inside of post-receive) hook file to remote host
+      copy:
+        src: "{{ post_checkout }}"
+        dest: "{{ post_checkout_tmp }}"
+          
+    - name: Append content of post-checkout hook to post-receive hook
+      shell: cat {{ post_checkout_tmp }} >> {{ post_receive_hook_file }}
+
+    - name: Remove {{ post_checkout_tmp }} temporary file
+      file:
+        path: "{{ post_checkout_tmp }}"
+        state: absent
+  when: post_checkout is defined
+  tags:
+    - set-remote_post-checkout
+
 - debug:
     msg: Will disable setting local remote repository since setting remote_name on multiple hosts is not supported
   when: local_work_tree is defined and remote_name is defined and groups['all']|length > 1
@@ -55,6 +76,6 @@
 
     - name: Add origin to local repository
       local_action: command git -C {{ local_work_tree }} remote add {{ _remote_name }} {{ remote_git }}
-  when: local_work_tree is defined and (remote_name is not defined or groups['all']|length == 0)
+  when: local_work_tree is defined and (remote_name is not defined or groups['all']|length == 1)
   tags:
     - set-remote_add-origin
