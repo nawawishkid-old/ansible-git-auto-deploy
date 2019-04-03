@@ -1,7 +1,7 @@
 - name: Git auto deploy
   hosts: all
   remote_user: "{{ u }}"
-  gather_facts: no
+  # gather_facts: no
   pre_tasks:
     - name: Unlimit SSH port 22 using ufw command
       ufw:

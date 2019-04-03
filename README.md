@@ -9,6 +9,10 @@
 
 - [ ] support multiple remotes with same name using `git remote set-url --add --push <name> <url>`. See: [https://stackoverflow.com/questions/14290113/git-pushing-code-to-two-remotes](https://stackoverflow.com/questions/14290113/git-pushing-code-to-two-remotes)
 
+## Issues
+
+- [x] ~~Incorrect work tree and repo directory path. Change it to be an absolute path.~~
+
 ---
 
 ## ก่อนใช้ควรจะ...

@@ -1,6 +1,6 @@
 ---
 # defaults file for roles/agad
-_work_tree_dirs: "{{ work_tree_dirs|default('.agad-work-tree') }}"
-_git_dirs: "{{ git_dirs|default('.agad-git') }}"
+_work_tree_dirs: "{{ work_tree_dirs|default(ansible_user_dir + '/.agad-work-tree') }}"
+_git_dirs: "{{ git_dirs|default(ansible_user_dir + '/.agad-git') }}"
 _repo_name: "{{ repo_name|mandatory }}"
 _branch: "{{ branch|default('master') }}"
