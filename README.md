@@ -5,14 +5,6 @@
 - รายชื่อ hosts หรือ IP address ทั้งหมดที่ระบุใน `hosts` file หรือ `-i` flag ของ `ansible-playbook` command จะถูกใช้ เนื่องจาก set ค่า `hosts` ไว้เป็น `all` ครับ
 - หลังจาก set up remote host(s) เสร็จแล้ว playbook นี้จะเพิ่ม remote repository ไปยัง local repository (`git remote add ...`) **ก็ต่อเมื่อ**ได้รับ arguments `local_work_tree` **และ** กรณีที่ run on multiple hosts **ต้องไม่** ใส่ argument `remote_name` ถ้าจะใส่ `remote_name` ต้องมี remote host เดียวเท่านั้นครับ
 
-## Todos
-
-- [ ] support multiple remotes with same name using `git remote set-url --add --push <name> <url>`. See: [https://stackoverflow.com/questions/14290113/git-pushing-code-to-two-remotes](https://stackoverflow.com/questions/14290113/git-pushing-code-to-two-remotes)
-
-## Issues
-
-- [x] ~~Incorrect work tree and repo directory path. Change it to be an absolute path.~~
-
 ---
 
 ## ก่อนใช้ควรจะ...
@@ -78,3 +70,15 @@ git remote add <remote-name> <username>@<remote-host>:.agad-git/<repo_name>.git
 | `git_dirs`        | ไม่       | `.agad-git`                             | Top directory ที่บรรดา bare Git repositories จะมารวมกันอยู่ในนี้                                                                                                                                            |
 | `branch`          | ไม่       | `master`                                | Branch ของ repository ที่จะถูก check out บน remote host                                                                                                                                                     |
 | `post_checkout`   | ไม่       | `undefined`                             | path ของ shell script file ที่ content จะถูก append ไปยัง post-receive hook file เพื่อ run หลังจาก checkout files ไปแล้ว                                                                                    |
+---
+
+## Todos
+
+- [ ] support multiple remotes with same name using `git remote set-url --add --push <name> <url>`. See: [https://stackoverflow.com/questions/14290113/git-pushing-code-to-two-remotes](https://stackoverflow.com/questions/14290113/git-pushing-code-to-two-remotes)
+
+---
+
+## Issues
+
+- [x] ~~Incorrect work tree and repo directory path. Change it to be an absolute path.~~
+
